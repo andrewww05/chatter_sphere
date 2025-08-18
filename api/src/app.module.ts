@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
 import { join } from 'path';
+import { User } from './features/user/entities/user.entity';
 
 @Module({
   imports: [
@@ -30,8 +31,13 @@ import { join } from 'path';
           username: db.username,
           password: db.password,
           database: db.database,
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          synchronize: true,
+          migrations: ['/migrations/*{.ts,.js}'],
+          migrationsTableName: '_migrations',
+          migrationsRun: true,
+          synchronize: !!configService.get<string>('APP_DB_SYNC') || false,
+          entities: [
+            User
+          ]
         };
       }
     }),

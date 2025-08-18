@@ -3,12 +3,22 @@
 # ------------------------------------------------------
 
 type User {
-  """User Unique Identifier"""
+  """User unique identifier"""
   id: String!
+
+  """User unique email"""
+  email: String!
+
+  """User role"""
+  role: String!
+
+  """User unique identifier"""
+  publicId: String!
 }
 
 type Query {
-  user(id: String): [User!]!
+  users: [User!]!
+  user(id: String!): User!
 }
 
 type Mutation {

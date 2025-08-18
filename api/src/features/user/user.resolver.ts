@@ -13,15 +13,18 @@ export class UserResolver {
     return this.userService.create(createUserInput);
   }
 
-  @Query(() => [User], { name: 'user' })
-  async findUser(
-    @Args('id', { type: () => String, nullable: true }) id?: string,
-  ) {
-    if (id) {
-      const user = await this.userService.findOne(id);
-      return user ? [user] : [];
-    }
+  @Query(returns => [User], { name: 'users' })
+  async findAll() {
     return this.userService.findAll();
+  }
+
+  @Query(() => User, { name: 'user' })
+  async findUser(
+    @Args('id', { type: () => String }) id: string,
+  ) {
+    const user = await this.userService.findOne(id);
+    
+    return user;
   }
 
   @Mutation(() => User)
