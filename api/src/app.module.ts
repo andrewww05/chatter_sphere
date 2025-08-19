@@ -33,7 +33,7 @@ import { User } from './features/user/entities/user.entity';
           database: db.database,
           migrations: ['/migrations/*{.ts,.js}'],
           migrationsTableName: '_migrations',
-          migrationsRun: true,
+          migrationsRun: false,
           synchronize: !!configService.get<string>('APP_DB_SYNC') || false,
           entities: [
             User

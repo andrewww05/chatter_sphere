@@ -1,8 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Info } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import type { GraphQLResolveInfo } from 'graphql';
+import graphqlFields from 'graphql-fields';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -14,8 +16,12 @@ export class UserResolver {
   }
 
   @Query(returns => [User], { name: 'users' })
-  async findAll() {
-    return this.userService.findAll();
+  async findAll(
+    @Info() info: GraphQLResolveInfo,
+  ) {
+    const fields = Object.keys(graphqlFields(info));
+    
+    return this.userService.findAll(fields);
   }
 
   @Query(() => User, { name: 'user' })

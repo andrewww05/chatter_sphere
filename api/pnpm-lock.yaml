@@ -35,6 +35,9 @@ importers:
       graphql:
         specifier: ^16.11.0
         version: 16.11.0
+      graphql-fields:
+        specifier: ^2.0.3
+        version: 2.0.3
       mysql2:
         specifier: ^3.14.3
         version: 3.14.3
@@ -2187,6 +2190,9 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  graphql-fields@2.0.3:
+    resolution: {integrity: sha512-x3VE5lUcR4XCOxPIqaO4CE+bTK8u6gVouOdpQX9+EKHr+scqtK5Pp/l8nIGqIpN1TUlkKE6jDCCycm/WtLRAwA==}
 
   graphql-tag@2.12.6:
     resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
@@ -6095,6 +6101,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  graphql-fields@2.0.3: {}
 
   graphql-tag@2.12.6(graphql@16.11.0):
     dependencies:

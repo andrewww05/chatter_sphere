@@ -13,8 +13,8 @@ export class UserService {
     return 'This action adds a new user';
   }
 
-  public async findAll() {
-    const users = await this.userRepository.findAll();
+  public async findAll(fields: string[]) {
+    const users = await this.userRepository.findAll(fields);
 
     return users;
   }
