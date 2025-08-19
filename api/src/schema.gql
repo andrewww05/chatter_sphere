@@ -17,7 +17,7 @@ type User {
 }
 
 type Query {
-  users: [User!]!
+  users(page: Int! = 1, items: Int! = 10): [User!]!
   user(id: String!): User!
 }
 
@@ -28,12 +28,14 @@ type Mutation {
 }
 
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Email"""
+  email: String!
+  publicId: String!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  """Email"""
+  email: String
+  publicId: String
   id: Int!
 }

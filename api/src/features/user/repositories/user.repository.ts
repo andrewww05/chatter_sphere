@@ -18,16 +18,24 @@ export class UserRepository {
     );
   }
   
-  public async findAll(fields?: string[]): Promise<User[]> {
+  public async findAll(page: number = 1, perPage: number = 10, fields?: string[]): Promise<User[]> {
+    const offset = (page-1)*perPage;
     const select = fields ? this.getSafeFields(fields!) : undefined;
 
     return await this.usersRepository.find({
       select,
+      take: perPage,
+      skip: offset
     });
   }
 
-  findOne(id: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  findOne(id: string, fields?: string[]): Promise<User | null> {
+    const select = fields ? this.getSafeFields(fields!) : undefined;
+
+    return this.usersRepository.findOne({ 
+        where: { id },
+        select
+     });
   }
 
   async remove(id: string): Promise<void> {

@@ -1,10 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int, Info } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Info, ResolveField, Parent } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import type { GraphQLResolveInfo } from 'graphql';
 import graphqlFields from 'graphql-fields';
+import { PaginationArgs } from 'src/common/dto';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -17,18 +18,21 @@ export class UserResolver {
 
   @Query(returns => [User], { name: 'users' })
   async findAll(
+    @Args() { page, items }: PaginationArgs,
     @Info() info: GraphQLResolveInfo,
   ) {
     const fields = Object.keys(graphqlFields(info));
-    
-    return this.userService.findAll(fields);
+    return this.userService.findAll(page, items, fields);
   }
 
   @Query(() => User, { name: 'user' })
   async findUser(
     @Args('id', { type: () => String }) id: string,
+    @Info() info: GraphQLResolveInfo,
   ) {
-    const user = await this.userService.findOne(id);
+    const fields = Object.keys(graphqlFields(info));
+
+    const user = await this.userService.findOne(id, fields);
     
     return user;
   }
@@ -42,4 +46,9 @@ export class UserResolver {
   removeUser(@Args('id', { type: () => Int }) id: string) {
     return this.userService.remove(id);
   }
+
+  // @ResolveField(() => User)
+  // profile(@Parent() user: User) {
+  //   return this.userService.getProfile(user.id);
+  // }
 }

@@ -13,16 +13,16 @@ export class UserService {
     return 'This action adds a new user';
   }
 
-  public async findAll(fields: string[]) {
-    const users = await this.userRepository.findAll(fields);
+  public async findAll(page: number, perPage: number, fields: string[]) {
+    const users = await this.userRepository.findAll(page, perPage, fields);
 
     return users;
   }
 
-  public findOne(id: string) {
-    return {
-      id
-    };
+  public async findOne(id: string, fields: string[]) {
+    const user = await this.userRepository.findOne(id, fields);
+
+    return user;
   }
 
   public update(id: string, updateUserInput: UpdateUserInput) {
