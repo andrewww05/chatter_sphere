@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserInput } from './inputs/create-user.input';
+import { UpdateUserInput } from './inputs/update-user.input';
 import { UserRepository } from './repositories/user.repository';
+import { WhereUserInput } from './inputs/where-user.input';
 
 @Injectable()
 export class UserService {
@@ -13,14 +14,14 @@ export class UserService {
     return 'This action adds a new user';
   }
 
-  public async findAll(page: number, perPage: number, fields: string[]) {
-    const users = await this.userRepository.findAll(page, perPage, fields);
+  public async findAll(page: number, perPage: number, fields?: string[], where?: WhereUserInput) {
+    const users = await this.userRepository.findAll(page, perPage, fields, where);
 
     return users;
   }
 
-  public async findOne(id: string, fields: string[]) {
-    const user = await this.userRepository.findOne(id, fields);
+  public async findOne(id: string, fields: string[], where?: WhereUserInput) {
+    const user = await this.userRepository.findOne(id, fields, where);
 
     return user;
   }
