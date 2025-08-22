@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config';
 import { join } from 'path';
-import { User } from './features/user/entities/user.entity';
+import { dataSourceOptions } from './data-source';
 
 @Module({
   imports: [
@@ -19,28 +19,7 @@ import { User } from './features/user/entities/user.entity';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const db = configService.get('app.database');
-        return {
-          type: db.type,
-          host: db.host,
-          port: db.port,
-          username: db.username,
-          password: db.password,
-          database: db.database,
-          migrations: ['/migrations/*{.ts,.js}'],
-          migrationsTableName: '_migrations',
-          migrationsRun: false,
-          synchronize: !!configService.get<string>('APP_DB_SYNC') || false,
-          entities: [
-            User
-          ]
-        };
-      }
-    }),
+    TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
   ],
   controllers: [AppController],

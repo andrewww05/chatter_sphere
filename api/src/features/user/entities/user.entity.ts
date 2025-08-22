@@ -1,5 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { UserRole } from 'src/common/enums';
+// import { UserRole } from 'src/common/enums';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity("users")
@@ -15,7 +15,7 @@ export class User {
 
   @Column({ length: 100 })
   @Field(() => String, { description: 'User role' })
-  role: UserRole;
+  role: string;
 
   @Column({ length: 30, name: "public_id" })
   @Field(() => String, { description: 'User unique identifier' })
