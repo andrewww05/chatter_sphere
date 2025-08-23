@@ -1,7 +1,7 @@
 import { InputType, Field, ArgsType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 import { PaginationArgs } from 'src/common/dto';
-import { WhereUserInput } from '../inputs/where-user.input';
+import { WhereUserInput } from './where-user.input';
 
 @ArgsType()
 export class FindUsersInput extends PaginationArgs {

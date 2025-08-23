@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { OrmHelper } from 'src/common/helpers';
 
 @Injectable()
 export class UserRepository {
@@ -10,14 +11,6 @@ export class UserRepository {
         private usersRepository: Repository<User>,
     ) {}
 
-    private allowedFields: string[] = Object.keys(new User());
-
-    private getSafeFields(fields: string[]): (keyof User)[] {
-        return fields.filter((f): f is keyof User =>
-            this.allowedFields.includes(f as keyof User),
-        );
-    }
-
     public async findAll(
         page: number = 1,
         perPage: number = 10,
@@ -25,7 +18,7 @@ export class UserRepository {
         where?: FindOptionsWhere<User>,
     ): Promise<User[]> {
         const offset = (page - 1) * perPage;
-        const select = fields ? this.getSafeFields(fields!) : undefined;
+        const select = fields ? OrmHelper.getSafeFields(fields!, new User()) : undefined;
 
         return await this.usersRepository.find({
             select,
@@ -35,8 +28,8 @@ export class UserRepository {
         });
     }
 
-    findOne(id: string, fields?: string[], where?: FindOptionsWhere<User>): Promise<User | null> {
-        const select = fields ? this.getSafeFields(fields!) : undefined;
+    public async findOne(id: string, fields?: string[], where?: FindOptionsWhere<User>): Promise<User | null> {
+        const select = fields ? OrmHelper.getSafeFields(fields!, new User()) : undefined;
 
         return this.usersRepository.findOne({
             where: { ...where, id },
@@ -44,7 +37,7 @@ export class UserRepository {
         });
     }
 
-    async remove(id: string): Promise<void> {
+    public async remove(id: string): Promise<void> {
         await this.usersRepository.delete(id);
     }
 }
