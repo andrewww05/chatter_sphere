@@ -1,32 +1,47 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-// import { UserRole } from 'src/common/enums';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ObjectType, Field } from '@nestjs/graphql';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+import { UserProfile } from './user-profile.entity';
 
-@Entity("users")
+@Entity('users')
 @ObjectType()
 export class User {
-  @PrimaryGeneratedColumn("uuid")
-  @Field(() => String, { description: 'User unique identifier' })
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    @Field(() => String, { description: 'User unique identifier' })
+    id: string;
 
-  @Column({ length: 320 })
-  @Field(() => String, { description: 'User unique email' })
-  email: string;
+    @Column({ length: 320 })
+    @Field(() => String, { description: 'User unique email' })
+    email: string;
 
-  @Column({ length: 100 })
-  @Field(() => String, { description: 'User role' })
-  role: string;
+    @Column({ length: 100 })
+    @Field(() => String, { description: 'User role' })
+    role: string;
 
-  @Column({ length: 30, name: "public_id" })
-  @Field(() => String, { description: 'User unique identifier' })
-  publicId: string;
+    @Column({ length: 30, name: 'public_id' })
+    @Field(() => String, { description: 'User unique identifier' })
+    publicId: string;
 
-  @Column({ name: "oauth_id" })
-  oauthId: string;
+    @Column({ name: 'oauth_id' })
+    oauthId: string;
 
-  @CreateDateColumn({ name: "created_at" })
-  createdAt: Date;
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date;
 
-  @UpdateDateColumn({ name: "updated_at" })
-  updatedAt: Date;
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date;
+
+    // Relations
+    @OneToOne(() => UserProfile, (profile) => profile.user, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    profile: UserProfile;
 }

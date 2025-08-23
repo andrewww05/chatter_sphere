@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './inputs/create-user.input';
-import { UpdateUserInput } from './inputs/update-user.input';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from './repositories/user.repository';
-import { WhereUserInput } from './inputs/where-user.input';
+import { CreateUserInput, UpdateUserInput, WhereUserInput } from './dto';
+
 
 @Injectable()
 export class UserService {
@@ -22,6 +21,10 @@ export class UserService {
 
   public async findOne(id: string, fields: string[], where?: WhereUserInput) {
     const user = await this.userRepository.findOne(id, fields, where);
+
+    if (!user) {
+      throw new NotFoundException("User not found")
+    }
 
     return user;
   }
