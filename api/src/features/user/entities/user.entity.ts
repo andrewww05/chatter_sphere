@@ -16,7 +16,7 @@ export class User {
     @Field(() => String, { description: 'User unique identifier' })
     id: string;
 
-    @Column({ length: 320 })
+    @Column({ length: 320, unique: true })
     @Field(() => String, { description: 'User unique email' })
     email: string;
 
@@ -24,11 +24,11 @@ export class User {
     @Field(() => String, { description: 'User role' })
     role: string;
 
-    @Column({ length: 30, name: 'public_id' })
+    @Column({ length: 30, name: 'public_id', unique: true })
     @Field(() => String, { description: 'User unique identifier' })
     publicId: string;
 
-    @Column({ name: 'oauth_id' })
+    @Column({ name: 'oauth_id', nullable: true, unique: true })
     oauthId: string;
 
     @CreateDateColumn({ name: 'created_at' })

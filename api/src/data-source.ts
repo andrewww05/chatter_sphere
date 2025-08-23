@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { User } from './features/user/entities/user.entity';
 import { DataSourceOptions } from 'typeorm/browser';
 import { UserProfile } from './features/user/entities/user-profile.entity';
-import { CreateUserTables1755967191206 } from '../migrations/1755967191206-CreateUserTables';
+import { CreateUserTables1755977403112 } from '../migrations/1755977403112-CreateUserTables';
 
 export const dataSourceOptions: DataSourceOptions = {
     type: process.env.DB_TYPE as "mysql",
@@ -19,7 +19,7 @@ export const dataSourceOptions: DataSourceOptions = {
         UserProfile
     ],
     migrations: [
-        CreateUserTables1755967191206
+        CreateUserTables1755977403112
     ],
 };
 

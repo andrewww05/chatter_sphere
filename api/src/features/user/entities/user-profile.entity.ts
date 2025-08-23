@@ -16,13 +16,17 @@ export class UserProfile {
     @PrimaryColumn('uuid', { name: "user_id" })
     userId: string;
 
-    @Column({ length: 100 })
-    @Field(() => String, { description: "User's full name" })
+    @Column({ length: 100, nullable: true })
+    @Field(() => String, { description: "User's full name", nullable: true })
     fullname: string;
 
-    @Column({ length: 1000 })
-    @Field(() => String, { description: "User's biography" })
+    @Column({ length: 1000, nullable: true })
+    @Field(() => String, { description: "User's biography", nullable: true })
     biography: string;
+
+    @Column("date", { name: "birth_date"  })
+    @Field(() => Date, { description: "User's birth date" })
+    birthDate: Date;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;

@@ -2,15 +2,18 @@ import { Resolver, Query, Mutation, Args, Int, Info } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import type { GraphQLResolveInfo } from 'graphql';
-import graphqlFields from 'graphql-fields';
 import { CreateUserInput, FindUserInput, FindUsersInput, UpdateUserInput } from './dto';
+import { CommonHelper } from 'src/common/helpers';
+import { MessageResponse } from 'src/common/entities';
 
 @Resolver(() => User)
 export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
-    @Mutation(() => User)
-    createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+    @Mutation(() => MessageResponse)
+    createUser(
+        @Args('input') createUserInput: CreateUserInput
+    ) {
         return this.userService.create(createUserInput);
     }
 
@@ -19,7 +22,7 @@ export class UserResolver {
         @Args() args: FindUsersInput,
         @Info() info: GraphQLResolveInfo,
     ) {
-        const fields = Object.keys(graphqlFields(info));
+        const fields = CommonHelper.getGraphQlFields(info);
         return this.userService.findAll(
             args.page,
             args.items,
@@ -33,7 +36,7 @@ export class UserResolver {
         @Args() args: FindUserInput,
         @Info() info: GraphQLResolveInfo,
     ) {
-        const fields = Object.keys(graphqlFields(info));
+        const fields = CommonHelper.getGraphQlFields(info);
 
         const user = await this.userService.findOne(args.id, fields, args.where);
 
