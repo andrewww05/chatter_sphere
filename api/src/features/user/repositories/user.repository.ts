@@ -4,32 +4,23 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { OrmHelper } from 'src/common/helpers';
 import { BaseRepository } from 'src/common/interfaces';
-import { CreateUserInput } from '../dto';
+import { CreateUserInput, UpdateUserInput } from '../dto';
 import { UserRole } from 'src/common/enums';
+import { UserProfile } from '../entities/user-profile.entity';
 
 @Injectable()
 export class UserRepository implements BaseRepository<User> {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
+        @InjectRepository(UserProfile)
+        private usersProfileRepository: Repository<UserProfile>,
     ) {}
 
-    public async exists(where: FindOptionsWhere<User>|FindOptionsWhere<User>[]): Promise<User|null> {
-        return this.usersRepository.findOne({
+    public async exists(where: FindOptionsWhere<User>|FindOptionsWhere<User>[]): Promise<boolean> {
+        return this.usersRepository.exists({
             where
         })
-    }
-
-    public async create(input: CreateUserInput): Promise<User> {
-        return this.usersRepository.save({
-            email: input.email,
-            publicId: input.publicId,
-            role: UserRole.USER,
-            profile: {
-                birthDate: new Date(input.birthDate),
-                fullname: input.fullname,
-            },
-        });
     }
 
     public async findAll(
@@ -52,21 +43,58 @@ export class UserRepository implements BaseRepository<User> {
     }
 
     public async findOne(
-        id: string,
+        where?: FindOptionsWhere<User>|FindOptionsWhere<User>[],
         fields?: string[],
-        where?: FindOptionsWhere<User>,
     ): Promise<User | null> {
         const select = fields
             ? OrmHelper.getSafeFields(fields!, new User())
             : undefined;
 
         return this.usersRepository.findOne({
-            where: { ...where, id },
+            where,
             select,
         });
     }
 
-    public async remove(id: string): Promise<void> {
-        await this.usersRepository.delete(id);
+    public async create(input: CreateUserInput): Promise<User> {
+        return this.usersRepository.save({
+            email: input.email,
+            publicId: input.publicId,
+            role: UserRole.USER,
+            profile: {
+                birthDate: new Date(input.birthDate),
+                fullname: input.fullname,
+            },
+        });
+    }
+
+    public async update(id: string, input: Omit<UpdateUserInput, "id">) {
+        return this.usersRepository.update({ id }, {
+            publicId: input.publicId,
+            profile: {
+                fullname: input.fullname,
+                biography: input.biography,
+                birthDate: input.birthDate,
+            }
+        });
+    }
+
+    public async remove(id: string) {
+        return await this.usersRepository.delete(id);
+    }
+
+    public async getProfile(
+        where?: FindOptionsWhere<UserProfile>|FindOptionsWhere<UserProfile>[],
+        fields?: string[],
+    ): Promise<UserProfile | null> {
+        const select = fields
+            ? OrmHelper.getSafeFields(fields!, new UserProfile()): undefined;
+
+        const profile = await this.usersProfileRepository.findOne({
+            where,
+            select: [...(select ?? []), 'userId'],
+        });
+
+        return profile;
     }
 }

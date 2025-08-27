@@ -2,6 +2,22 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UserProfile {
+  """User's full name"""
+  fullname: String
+
+  """User's biography"""
+  biography: String
+
+  """User's birth date"""
+  birthDate: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type User {
   """User unique identifier"""
   id: String!
@@ -14,6 +30,9 @@ type User {
 
   """User unique identifier"""
   publicId: String!
+
+  """User profile"""
+  profile: UserProfile!
 }
 
 type MessageResponse {
@@ -34,7 +53,7 @@ input WhereUserInput {
 
 type Mutation {
   createUser(input: CreateUserInput!): MessageResponse!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
 
@@ -57,12 +76,15 @@ input UpdateUserInput {
   email: String
 
   """Public id"""
-  publicId: String
+  publicId: String!
 
   """Name"""
-  fullname: String
+  fullname: String!
 
   """Birth date"""
-  birthDate: String
+  birthDate: String!
   id: String!
+
+  """Biography"""
+  biography: String!
 }

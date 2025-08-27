@@ -43,5 +43,6 @@ export class User {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
+    @Field(() => UserProfile, { description: 'User profile' })
     profile: UserProfile;
 }

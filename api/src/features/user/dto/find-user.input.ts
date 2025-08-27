@@ -1,5 +1,5 @@
 import { InputType, Field, ArgsType } from '@nestjs/graphql';
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { PaginationArgs } from 'src/common/dto';
 import { WhereUserInput } from './where-user.input';
 
@@ -13,5 +13,6 @@ export class FindUsersInput extends PaginationArgs {
 @ArgsType()
 export class FindUserInput extends FindUsersInput {
     @Field(() => String, { nullable: false })
+    @IsString()
     id: string;
 }

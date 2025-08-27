@@ -1,8 +1,6 @@
 import { FindOptionsWhere } from 'typeorm';
 
 export interface BaseRepository<T> {
-    create(input: unknown): Promise<T>
-
     findAll<R>(
         page: number,
         perPage: number,
@@ -11,10 +9,13 @@ export interface BaseRepository<T> {
     ): Promise<(R|T)[]>;
 
     findOne<R>(
-        id: string,
-        fields?: string[],
         where?: FindOptionsWhere<T>,
+        fields?: string[],
     ): Promise<(R|T) | null>;
 
-    remove(id: string): Promise<void>
+    create(input: unknown): Promise<T|unknown>;
+
+    update(id: string, input: unknown): Promise<T|unknown> 
+
+    remove(id: string): Promise<T|unknown>
 }

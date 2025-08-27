@@ -24,7 +24,7 @@ export class UserProfile {
     @Field(() => String, { description: "User's biography", nullable: true })
     biography: string;
 
-    @Column("date", { name: "birth_date"  })
+    @Column("date", { name: "birth_date" })
     @Field(() => Date, { description: "User's birth date" })
     birthDate: Date;
 
