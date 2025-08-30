@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [new URL('https://d2zia2w5autnlg.cloudfront.net/**')],
   },
+  matcher: [
+    '/'
+  ]
 };
 
 export default withNextIntl(nextConfig);

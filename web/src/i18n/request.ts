@@ -4,6 +4,7 @@ import { hasLocale } from "next-intl";
 
 export default getRequestConfig(async ({ requestLocale }): Promise<RequestConfig> => {
     const requested = await requestLocale;
+
     const locale = hasLocale(locales, requested)
         ? requested
         : fallbackLocale;
