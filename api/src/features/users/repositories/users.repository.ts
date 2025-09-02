@@ -9,7 +9,7 @@ import { UserRole } from 'src/common/enums';
 import { UserProfile } from '../entities/user-profile.entity';
 
 @Injectable()
-export class UserRepository implements BaseRepository<User> {
+export class UsersRepository implements BaseRepository<User> {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,

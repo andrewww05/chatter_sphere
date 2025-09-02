@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import { DataSource } from 'typeorm';
-import { User } from './features/user/entities/user.entity';
+import { User } from './features/users/entities/user.entity';
 import { DataSourceOptions } from 'typeorm/browser';
-import { UserProfile } from './features/user/entities/user-profile.entity';
+import { UserProfile } from './features/users/entities/user-profile.entity';
 import { CreateUserTables1755977403112 } from '../migrations/1755977403112-CreateUserTables';
 
 export const dataSourceOptions: DataSourceOptions = {

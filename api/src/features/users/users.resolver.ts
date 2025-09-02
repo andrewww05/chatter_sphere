@@ -8,7 +8,7 @@ import {
     ResolveField,
     Parent,
 } from '@nestjs/graphql';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import type { GraphQLResolveInfo } from 'graphql';
 import {
@@ -22,12 +22,12 @@ import { MessageResponse } from 'src/common/entities';
 import { UserProfile } from './entities/user-profile.entity';
 
 @Resolver(() => User)
-export class UserResolver {
-    constructor(private readonly userService: UserService) {}
+export class UsersResolver {
+    constructor(private readonly usersService: UsersService) {}
 
     @Mutation(() => MessageResponse)
     public async createUser(@Args('input') createUserInput: CreateUserInput) {
-        return this.userService.create(createUserInput);
+        return this.usersService.create(createUserInput);
     }
 
     @Query(() => [User], { name: 'users' })
@@ -36,7 +36,7 @@ export class UserResolver {
         @Info() info: GraphQLResolveInfo,
     ) {
         const fields = CommonHelper.getGraphQlFields(info);
-        return this.userService.findAll(
+        return this.usersService.findAll(
             args.page,
             args.items,
             fields,
@@ -51,7 +51,7 @@ export class UserResolver {
     ) {
         const fields = CommonHelper.getGraphQlFields(info, ['id']);
 
-        const user = await this.userService.findOne(
+        const user = await this.usersService.findOneById(
             args.id,
             fields,
             args.where,
@@ -63,18 +63,18 @@ export class UserResolver {
     @ResolveField(() => UserProfile)
     public async profile(@Parent() user: Partial<User> & { id: string }, @Info() info: GraphQLResolveInfo) {
         const fields = CommonHelper.getGraphQlFields(info);
-        return this.userService.getProfile(user.id, fields);
+        return this.usersService.getProfile(user.id, fields);
     }
 
     @Mutation(() => User)
     public async updateUser(@Args('input') input: UpdateUserInput) {
         const { id, ...data } = input;
 
-        return this.userService.update(id, data);
+        return this.usersService.update(id, data);
     }
 
     @Mutation(() => User)
     public async removeUser(@Args('id', { type: () => Int }) id: string) {
-        return this.userService.remove(id);
+        return this.usersService.remove(id);
     }
 }

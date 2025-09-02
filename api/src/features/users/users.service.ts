@@ -3,14 +3,14 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import { UserRepository } from './repositories/user.repository';
+import { UsersRepository } from './repositories/users.repository';
 import { CreateUserInput, UpdateUserInput, WhereUserInput } from './dto';
 import { MessageResponse } from 'src/common/entities';
 import { Not } from 'typeorm';
 
 @Injectable()
-export class UserService {
-    public constructor(private readonly userRepository: UserRepository) {}
+export class UsersService {
+    public constructor(private readonly userRepository: UsersRepository) {}
 
     public async findAll(
         page: number,
@@ -28,8 +28,18 @@ export class UserService {
         return users;
     }
 
-    public async findOne(id: string, fields: string[], where?: WhereUserInput) {
+    public async findOneById(id: string, fields: string[], where?: WhereUserInput) {
         const user = await this.userRepository.findOne({ id, ...where}, fields);
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        return user;
+    }
+
+    public async findOneByEmail(email: string, fields?: string[], where?: WhereUserInput) {
+        const user = await this.userRepository.findOne({ id: email, ...where}, fields);
 
         if (!user) {
             throw new NotFoundException('User not found');
