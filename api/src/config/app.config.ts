@@ -1,5 +1,9 @@
 export default () => ({
-    app: {},
+    app: {
+        jwt: {
+            secret: process.env.APP_JWT_SECRET
+        }
+    },
     google: {
         oauth: {
             clientId: process.env.GOOGLE_OAUTH_CLIENT_ID,

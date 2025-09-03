@@ -12,23 +12,16 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import type { GraphQLResolveInfo } from 'graphql';
 import {
-    CreateUserInput,
     FindUserInput,
     FindUsersInput,
     UpdateUserInput,
 } from './dto';
 import { CommonHelper } from 'src/common/helpers';
-import { MessageResponse } from 'src/common/entities';
 import { UserProfile } from './entities/user-profile.entity';
 
 @Resolver(() => User)
 export class UsersResolver {
     constructor(private readonly usersService: UsersService) {}
-
-    @Mutation(() => MessageResponse)
-    public async createUser(@Args('input') createUserInput: CreateUserInput) {
-        return this.usersService.create(createUserInput);
-    }
 
     @Query(() => [User], { name: 'users' })
     public async findAll(

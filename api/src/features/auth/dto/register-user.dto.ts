@@ -1,17 +1,7 @@
-import {
-    IsDateString,
-    IsEmail,
-    IsOptional,
-    IsString,
-    MaxLength,
-} from 'class-validator';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
+import { Field } from '@nestjs/graphql';
+import { IsDateString, IsEmail, IsString, MaxLength } from 'class-validator';
 
-@InputType()
-export class UpdateUserInput {
-    @Field(() => String)
-    id: string;
-
+export class RegisterUserDto {
     @Field(() => String, { description: 'Email' })
     @IsEmail()
     email: string;
@@ -29,10 +19,4 @@ export class UpdateUserInput {
     @Field(() => String, { description: 'Birth date' })
     @IsDateString()
     birthDate: string;
-
-    @Field(() => String, { description: 'Biography' })
-    @IsOptional()
-    @IsString()
-    @MaxLength(1000)
-    biography: string;
 }

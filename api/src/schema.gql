@@ -35,10 +35,6 @@ type User {
   profile: UserProfile!
 }
 
-type MessageResponse {
-  message: String!
-}
-
 type Query {
   users(page: Int! = 1, items: Int! = 10, where: WhereUserInput): [User!]!
   user(where: WhereUserInput, page: Int! = 1, items: Int! = 10, id: String!): User!
@@ -52,12 +48,13 @@ input WhereUserInput {
 }
 
 type Mutation {
-  createUser(input: CreateUserInput!): MessageResponse!
   updateUser(input: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
 
-input CreateUserInput {
+input UpdateUserInput {
+  id: String!
+
   """Email"""
   email: String!
 
@@ -69,21 +66,6 @@ input CreateUserInput {
 
   """Birth date"""
   birthDate: String!
-}
-
-input UpdateUserInput {
-  """Email"""
-  email: String
-
-  """Public id"""
-  publicId: String!
-
-  """Name"""
-  fullname: String!
-
-  """Birth date"""
-  birthDate: String!
-  id: String!
 
   """Biography"""
   biography: String!

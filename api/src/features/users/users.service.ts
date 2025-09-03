@@ -4,9 +4,11 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { UsersRepository } from './repositories/users.repository';
-import { CreateUserInput, UpdateUserInput, WhereUserInput } from './dto';
+import { UpdateUserInput, WhereUserInput } from './dto';
 import { MessageResponse } from 'src/common/entities';
 import { Not } from 'typeorm';
+import { RegisterUserDto } from '../auth/dto';
+import { User } from './entities';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +30,7 @@ export class UsersService {
         return users;
     }
 
-    public async findOneById(id: string, fields: string[], where?: WhereUserInput) {
+    public async findOneById(id: string, fields?: string[], where?: WhereUserInput) {
         const user = await this.userRepository.findOne({ id, ...where}, fields);
 
         if (!user) {
@@ -48,7 +50,7 @@ export class UsersService {
         return user;
     }
 
-    public async create(input: CreateUserInput): Promise<MessageResponse> {
+    public async create(input: RegisterUserDto): Promise<User> {
         const existingUser = await this.userRepository.findOne([
             { email: input.email },
             { publicId: input.publicId },
@@ -68,7 +70,7 @@ export class UsersService {
 
         const user = await this.userRepository.create(input);
 
-        return { message: "success" };
+        return user;
     }
 
     public async update(id: string, input: Omit<UpdateUserInput, "id">) {

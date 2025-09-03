@@ -4,9 +4,10 @@ import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { OrmHelper } from 'src/common/helpers';
 import { BaseRepository } from 'src/common/interfaces';
-import { CreateUserInput, UpdateUserInput } from '../dto';
+import { UpdateUserInput } from '../dto';
 import { UserRole } from 'src/common/enums';
 import { UserProfile } from '../entities/user-profile.entity';
+import { RegisterUserDto } from 'src/features/auth/dto';
 
 @Injectable()
 export class UsersRepository implements BaseRepository<User> {
@@ -56,7 +57,7 @@ export class UsersRepository implements BaseRepository<User> {
         });
     }
 
-    public async create(input: CreateUserInput): Promise<User> {
+    public async create(input: RegisterUserDto): Promise<User> {
         return this.usersRepository.save({
             email: input.email,
             publicId: input.publicId,
