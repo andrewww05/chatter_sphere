@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-const Sidebar: FC = () => {
+const MainSidebar: FC = () => {
     const pathname = usePathname()
     const t = useTranslations("common");
     const menuItems = [
@@ -72,7 +72,7 @@ const Sidebar: FC = () => {
                                             <span className="w-full text-sm font-medium text-primary-text text-center">5</span>
                                         </span>
                                     </div>
-                                </div>
+                                </div> 
                             </li>
                         );
                     })}
@@ -104,4 +104,4 @@ const Sidebar: FC = () => {
     )
 }
 
-export default Sidebar;
+export default MainSidebar;
