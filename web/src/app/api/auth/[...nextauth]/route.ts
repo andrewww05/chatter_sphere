@@ -1,7 +1,9 @@
+import api from "@/shared/http/instances";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const handler = NextAuth({
+    debug: true,
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_OAUTH_CLIENT_ID as string,
@@ -9,36 +11,29 @@ const handler = NextAuth({
             httpOptions: {
                 timeout: 40000,
             },
-            authorization: {
-                params: {
-                    prompt: "consent",
-                    access_type: "offline",
-                    response_type: "code",
-                },
-            },
         }),
     ],
     callbacks: {
         async jwt({ token, account, user }) {
             if (account) {
-                const res = await fetch(
-                    `${process.env.APP_NEXTAUTH_URL_INTERNAL}/auth/login`,
-                    {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${account?.id_token}`,
-                        },
-                    }
-                );
-                const resParsed = await res.json();
-                token = Object.assign({}, token, {
-                    id_token: account.id_token,
+                const res = await api.unauthorized.post("/auth/login/google", {
+                    headers: {
+                        Authorization: `Bearer ${account.id_token}`,
+                    },
                 });
-                token = Object.assign({}, token, {
-                    myToken: resParsed.authToken,
-                });
-            }
 
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error(
+                        `Backend returned ${res.status}: ${errorText}`
+                    );
+                    throw new Error(`Backend request failed: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                token.backendData = data;
+            }
             return token;
         },
         async session({ session, token }) {
@@ -54,11 +49,11 @@ const handler = NextAuth({
         },
     },
     pages: {
-        signIn: "/auth/signin",
-        signOut: "/auth/signout",
-        error: "/auth/error",
-        verifyRequest: "/auth/verify-request",
-        newUser: "/auth/new-user",
+        signIn: "/sign-in",
+        signOut: "/sign-out",
+        error: "/error",
+        verifyRequest: "/verify-request",
+        newUser: "/new-user",
     },
 });
 

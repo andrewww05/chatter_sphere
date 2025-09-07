@@ -15,9 +15,9 @@ type Props = {
 export default async function MainWrapperLayout({ children }: Readonly<Props>) {
   const { status } = useSession();
 
-  if (status == "unauthenticated") {
-    redirect('/sign-in');
-  }
+  // if (status == "unauthenticated") {
+  //   redirect('/sign-in');
+  // }
 
   return (
     <MainLayout>
