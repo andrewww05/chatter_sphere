@@ -57,13 +57,12 @@ export class UsersRepository implements BaseRepository<User> {
         });
     }
 
-    public async create(input: RegisterUserDto): Promise<User> {
+    public async create(input: RegisterUserDto & { publicId: string }): Promise<User> {
         return this.usersRepository.save({
             email: input.email,
             publicId: input.publicId,
             role: UserRole.USER,
             profile: {
-                birthDate: new Date(input.birthDate),
                 fullname: input.fullname,
             },
         });

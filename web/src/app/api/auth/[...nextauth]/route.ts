@@ -16,7 +16,7 @@ const handler = NextAuth({
     callbacks: {
         async jwt({ token, account, user }) {
             if (account) {
-                const res = await api.unauthorized.post("/auth/login/google", {
+                const res = await api.unauthorized.post("auth/login/google", {
                     headers: {
                         Authorization: `Bearer ${account.id_token}`,
                     },

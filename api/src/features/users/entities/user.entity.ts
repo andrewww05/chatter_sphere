@@ -28,9 +28,6 @@ export class User {
     @Field(() => String, { description: 'User unique identifier' })
     publicId: string;
 
-    @Column({ name: 'oauth_id', nullable: true, unique: true })
-    oauthId: string;
-
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 

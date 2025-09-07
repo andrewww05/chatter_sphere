@@ -1,46 +1,57 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+    Injectable
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { RegisterUserDto } from './dto';
+import { ConfigService } from '@nestjs/config';
+import { GoogleUser } from './models';
+import { User } from '../users/entities';
 
 @Injectable()
 export class AuthService {
+    private LIFETIME_ACCESS_TOKEN: string;
+    private LIFETIME_REFRESH_TOKEN: string;
+
     constructor(
-        private usersService: UsersService,
+        private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
-    ) {}
-
-    private generateJwt(payload) {
-        return this.jwtService.sign(payload);
+        private readonly configService: ConfigService,
+    ) {
+        this.LIFETIME_ACCESS_TOKEN = this.configService.getOrThrow('app.jwt.lifetime.access');
+        this.LIFETIME_REFRESH_TOKEN = this.configService.getOrThrow('app.jwt.lifetime.refresh');
     }
 
-    public async registerUser(dto: RegisterUserDto) {
-        try {
-            const user = await this.usersService.create(dto);
-
-            return this.generateJwt({
-                sub: user.id,
-                email: user.email,
-            });
-        } catch {
-            throw new InternalServerErrorException();
-        }
-    }
-
-    public async signIn(user) {
-        if (!user) {
-            throw new BadRequestException('Unauthenticated');
-        }
-
-        const userExists = await this.usersService.findOneByEmail(user.email);
-
-        if (!userExists) {
-            return this.registerUser(user);
-        }
-
-        return this.generateJwt({
-            sub: userExists.id,
-            email: userExists.email,
+    private issueTokens(payload) {
+        const accessToken = this.jwtService.sign({
+            ...payload,
+            tokenType: 'access' 
+        }, {
+            expiresIn: this.LIFETIME_ACCESS_TOKEN,
         });
+        const refreshToken = this.jwtService.sign({
+            ...payload,
+            tokenType: 'refresh'
+        }, {
+            expiresIn: this.LIFETIME_REFRESH_TOKEN,
+        });
+
+        return { accessToken, refreshToken }
+    }
+
+    public async signInGoogle(googleUser: GoogleUser) {
+        let user: User|null = await this.usersService.findOneByEmail(googleUser.email);
+
+        if (!user) {
+            user = await this.usersService.create({
+                email: googleUser.email,
+                fullname: googleUser.name
+            });
+        };
+
+        const tokens = await this.issueTokens({ 
+            id: user.id
+         });
+        
+        return tokens;
     }
 }
