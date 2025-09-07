@@ -5,8 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from 'src/features/users/users.service';
 
 export type JwtPayload = {
-    sub: string;
-    email: string;
+    tokenType: 'access' | 'refresh';
+    id: string;
 };
 
 @Injectable()
@@ -31,13 +31,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload) {
-        const user = await this.usersService.findOneById(payload.sub);
+        if (payload.tokenType != 'access') throw new UnauthorizedException('Invalid token');
+
+        const user = await this.usersService.findOneById(payload.id);
 
         if (!user) throw new UnauthorizedException('Please log in to continue');
 
         return {
-            id: payload.sub,
-            email: payload.email,
+            id: payload.id,
         };
     }
 }
