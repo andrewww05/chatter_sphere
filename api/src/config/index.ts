@@ -1,5 +1,3 @@
-import appConfig from "./app.config";
+import appConfig from './app.config';
 
-export default [
-    appConfig
-];
+export default [appConfig];

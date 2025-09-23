@@ -13,7 +13,7 @@ import { User } from './user.entity';
 @Entity('user_profiles')
 @ObjectType()
 export class UserProfile {
-    @PrimaryColumn('uuid', { name: "user_id" })
+    @PrimaryColumn('uuid', { name: 'user_id' })
     userId: string;
 
     @Column({ length: 100, nullable: true })
@@ -24,7 +24,7 @@ export class UserProfile {
     @Field(() => String, { description: "User's biography", nullable: true })
     biography: string;
 
-    @Column("date", { name: "birth_date" })
+    @Column('date', { name: 'birth_date' })
     @Field(() => Date, { description: "User's birth date" })
     birthDate: Date;
 
@@ -33,9 +33,12 @@ export class UserProfile {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
-    
+
     // Relations
     @OneToOne(() => User, (user) => user.profile)
-    @JoinColumn({ name: 'user_id', foreignKeyConstraintName: 'fk_user_profile_user_id' })
+    @JoinColumn({
+        name: 'user_id',
+        foreignKeyConstraintName: 'fk_user_profile_user_id',
+    })
     user: User;
 }

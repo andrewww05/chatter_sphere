@@ -15,7 +15,7 @@ import { GoogleOAuthProvider } from './providers';
         JwtModule.registerAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                secret: configService.get('app.jwt.secret')
+                secret: configService.get('app.jwt.secret'),
             }),
             inject: [ConfigService],
         }),

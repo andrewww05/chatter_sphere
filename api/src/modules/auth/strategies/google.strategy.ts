@@ -37,10 +37,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         }
 
         return new GoogleUser(
-            payload.email as string, 
+            payload.email as string,
             payload.name as string,
             payload.picture as string,
             payload.sub as string,
-        )
+        );
     }
 }

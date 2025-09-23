@@ -1,10 +1,7 @@
-'use client'
-
 import "../../../globals.css";
 import { ReactNode } from "react";
-import { Session } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import MainLayout from "@/app/_layouts/MainLayout";
-import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 type Props = {
@@ -13,11 +10,11 @@ type Props = {
 };
 
 export default async function MainWrapperLayout({ children }: Readonly<Props>) {
-  const { status } = useSession();
+  const session = await getServerSession();
 
-  // if (status == "unauthenticated") {
-  //   redirect('/sign-in');
-  // }
+  if (!session) {
+    redirect("/sign-in");
+  }
 
   return (
     <MainLayout>

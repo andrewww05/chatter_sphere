@@ -7,7 +7,7 @@ import { BaseRepository } from 'src/common/interfaces';
 import { UpdateUserInput } from '../dto';
 import { UserRole } from 'src/common/enums';
 import { UserProfile } from '../entities/user-profile.entity';
-import { RegisterUserDto } from 'src/features/auth/dto';
+import { RegisterUserDto } from 'src/modules/auth/dto';
 
 @Injectable()
 export class UsersRepository implements BaseRepository<User> {
@@ -18,10 +18,12 @@ export class UsersRepository implements BaseRepository<User> {
         private usersProfileRepository: Repository<UserProfile>,
     ) {}
 
-    public async exists(where: FindOptionsWhere<User>|FindOptionsWhere<User>[]): Promise<boolean> {
+    public async exists(
+        where: FindOptionsWhere<User> | FindOptionsWhere<User>[],
+    ): Promise<boolean> {
         return this.usersRepository.exists({
-            where
-        })
+            where,
+        });
     }
 
     public async findAll(
@@ -44,7 +46,7 @@ export class UsersRepository implements BaseRepository<User> {
     }
 
     public async findOne(
-        where?: FindOptionsWhere<User>|FindOptionsWhere<User>[],
+        where?: FindOptionsWhere<User> | FindOptionsWhere<User>[],
         fields?: string[],
     ): Promise<User | null> {
         const select = fields
@@ -57,7 +59,9 @@ export class UsersRepository implements BaseRepository<User> {
         });
     }
 
-    public async create(input: RegisterUserDto & { publicId: string }): Promise<User> {
+    public async create(
+        input: RegisterUserDto & { publicId: string },
+    ): Promise<User> {
         return this.usersRepository.save({
             email: input.email,
             publicId: input.publicId,
@@ -68,15 +72,18 @@ export class UsersRepository implements BaseRepository<User> {
         });
     }
 
-    public async update(id: string, input: Omit<UpdateUserInput, "id">) {
-        return this.usersRepository.update({ id }, {
-            publicId: input.publicId,
-            profile: {
-                fullname: input.fullname,
-                biography: input.biography,
-                birthDate: input.birthDate,
-            }
-        });
+    public async update(id: string, input: Omit<UpdateUserInput, 'id'>) {
+        return this.usersRepository.update(
+            { id },
+            {
+                publicId: input.publicId,
+                profile: {
+                    fullname: input.fullname,
+                    biography: input.biography,
+                    birthDate: input.birthDate,
+                },
+            },
+        );
     }
 
     public async remove(id: string) {
@@ -84,11 +91,12 @@ export class UsersRepository implements BaseRepository<User> {
     }
 
     public async getProfile(
-        where?: FindOptionsWhere<UserProfile>|FindOptionsWhere<UserProfile>[],
+        where?: FindOptionsWhere<UserProfile> | FindOptionsWhere<UserProfile>[],
         fields?: string[],
     ): Promise<UserProfile | null> {
         const select = fields
-            ? OrmHelper.getSafeFields(fields!, new UserProfile()): undefined;
+            ? OrmHelper.getSafeFields(fields!, new UserProfile())
+            : undefined;
 
         const profile = await this.usersProfileRepository.findOne({
             where,

@@ -90,7 +90,10 @@ export class UsersService {
             publicIdExists = await this.userRepository.exists({ publicId });
         } while (publicIdExists);
 
-        const fullfilled: RegisterUserDto & { publicId: string } = { ...dto, publicId };
+        const fullfilled: RegisterUserDto & { publicId: string } = {
+            ...dto,
+            publicId,
+        };
 
         const user = await this.userRepository.create(fullfilled);
 

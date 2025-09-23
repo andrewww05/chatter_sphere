@@ -11,11 +11,7 @@ import {
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import type { GraphQLResolveInfo } from 'graphql';
-import {
-    FindUserInput,
-    FindUsersInput,
-    UpdateUserInput,
-} from './dto';
+import { FindUserInput, FindUsersInput, UpdateUserInput } from './dto';
 import { CommonHelper } from 'src/common/helpers';
 import { UserProfile } from './entities/user-profile.entity';
 
@@ -54,7 +50,10 @@ export class UsersResolver {
     }
 
     @ResolveField(() => UserProfile)
-    public async profile(@Parent() user: Partial<User> & { id: string }, @Info() info: GraphQLResolveInfo) {
+    public async profile(
+        @Parent() user: Partial<User> & { id: string },
+        @Info() info: GraphQLResolveInfo,
+    ) {
         const fields = CommonHelper.getGraphQlFields(info);
         return this.usersService.getProfile(user.id, fields);
     }

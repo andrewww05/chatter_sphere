@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from 'src/features/users/users.service';
+import { UsersService } from 'src/modules/users/users.service';
 
 export type JwtPayload = {
     tokenType: 'access' | 'refresh';
@@ -17,9 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     ) {
         const extractJwtFromCookie = (req) => {
             let token = null;
-            if (req && req.cookies) {
-                token = req.cookies['access_token'];
-            }
+
             return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
         };
 
@@ -31,14 +29,13 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload) {
-        if (payload.tokenType != 'access') throw new UnauthorizedException('Invalid token');
+        if (payload.tokenType != 'access')
+            throw new UnauthorizedException('Invalid token');
 
         const user = await this.usersService.findOneById(payload.id);
 
         if (!user) throw new UnauthorizedException('Please log in to continue');
 
-        return {
-            id: payload.id,
-        };
+        return user;
     }
 }
