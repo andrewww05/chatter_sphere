@@ -1,8 +1,6 @@
 {
-    "common": {
-        "profile": "Profile",
-        "home": "Home",
-        "messages": "Messages",
-        "settings": "Settings"
-    }
+  "profile": "Profile",
+  "home": "Home",
+  "messages": "Messages",
+  "settings": "Settings"
 }

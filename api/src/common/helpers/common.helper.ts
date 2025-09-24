@@ -10,4 +10,8 @@ export class CommonHelper {
             ...new Set([...Object.keys(graphqlFields(info)), ...addFields]),
         ];
     }
+
+    public static isProduction(): boolean {
+        return process.env.NODE_ENV === 'production';
+    }
 }

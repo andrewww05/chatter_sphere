@@ -5,12 +5,13 @@ import { hasLocale } from "next-intl";
 export default getRequestConfig(async ({ requestLocale }): Promise<RequestConfig> => {
     const requested = await requestLocale;
 
-    const locale = hasLocale(locales, requested)
-        ? requested
-        : fallbackLocale;
+        const locale = hasLocale(locales, requested)
+            ? requested
+            : fallbackLocale;
 
     const messages = {
-        ...(await import(`../../messages/${locale}/common.json`)).default,
+        "common": {...(await import(`../../messages/${locale}/common.json`)).default},
+        "auth": {...(await import(`../../messages/${locale}/auth.json`)).default},
     }
 
     return {

@@ -1,24 +1,20 @@
-import "../../../globals.css";
-import { ReactNode } from "react";
-import { getServerSession, Session } from "next-auth";
-import MainLayout from "@/app/_layouts/MainLayout";
-import { redirect } from "next/navigation";
+import '../../../globals.css';
+import { ReactNode } from 'react';
+import { getServerSession, Session } from 'next-auth';
+import MainLayout from '@/app/_layouts/MainLayout';
+import { redirect } from 'next/navigation';
 
 type Props = {
-  children: ReactNode;
-  session: Session;
+    children: ReactNode;
+    session: Session;
 };
 
 export default async function MainWrapperLayout({ children }: Readonly<Props>) {
-  const session = await getServerSession();
+    const session = await getServerSession();
 
-  if (!session) {
-    redirect("/sign-in");
-  }
+    if (!session) {
+        redirect('/sign-in');
+    }
 
-  return (
-    <MainLayout>
-      {children}
-    </MainLayout>
-  );
+    return <MainLayout>{children}</MainLayout>;
 }

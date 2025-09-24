@@ -2,6 +2,7 @@ export default () => ({
     app: {
         common: {
             url: process.env.APP_URL,
+            domain: process.env.APP_DOMAIN,
         },
         jwt: {
             secret: process.env.APP_JWT_SECRET,

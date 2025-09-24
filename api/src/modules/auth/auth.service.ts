@@ -1,19 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { CookieOptions, Response } from 'express';
+import { CookieOptions, Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { GoogleUser, JwtPayload, JwtPayloadInput } from './models';
 import type { TokenType } from './models';
 import { User } from '../users/entities';
+import { CommonHelper } from 'src/common/helpers';
 
 @Injectable()
 export class AuthService {
-    private LIFETIME_ACCESS_TOKEN: string;
-    private LIFETIME_REFRESH_TOKEN: string;
-    private APP_URL: string;
+    private readonly LIFETIME_ACCESS_TOKEN: string;
+    private readonly LIFETIME_REFRESH_TOKEN: string;
+    private readonly APP_URL: string;
 
-    private cookieConfig: CookieOptions;
+    private readonly cookieConfig: CookieOptions;
 
     constructor(
         private readonly usersService: UsersService,
@@ -28,9 +29,9 @@ export class AuthService {
         );
         this.APP_URL = this.configService.getOrThrow('app.common.url');
         this.cookieConfig = {
-            domain: this.APP_URL,
-            // secure: true,
-            // httpOnly: true,
+            domain: this.configService.getOrThrow('app.common.domain'),
+            secure: CommonHelper.isProduction(),
+            httpOnly: CommonHelper.isProduction(),
         };
     }
 
@@ -92,12 +93,46 @@ export class AuthService {
             });
         }
 
-        const tokens = await this.issueTokens({
+        const { accessToken, refreshToken } = this.issueTokens({
             id: user.id,
         });
 
-        this.addRefreshTokenToResponse(res, tokens.refreshToken);
+        this.addRefreshTokenToResponse(res, refreshToken);
 
-        return tokens;
+        return { accessToken };
+    }
+
+    public async refresh(req: Request, res: Response) {
+        const target: TokenType = 'refresh';
+
+        const cookies = req.cookies as Record<string, string | undefined>;
+        const token = cookies[target];
+
+        if (!token) throw new UnauthorizedException('Unauthorized');
+
+        let valid: JwtPayload;
+        try {
+            valid = this.jwtService.verify<JwtPayload>(token);
+        } catch {
+            throw new UnauthorizedException('Invalid token');
+        }
+
+        if (!valid || !valid.id || valid.tokenType !== 'refresh') {
+            throw new UnauthorizedException('Unauthorized');
+        }
+
+        const user = await this.usersService.findOneById(valid.id);
+
+        const { accessToken, refreshToken } = this.issueTokens({ id: user.id });
+
+        this.addRefreshTokenToResponse(res, refreshToken);
+
+        return { accessToken };
+    }
+
+    public logout(req: Request, res: Response) {
+        this.removeRefreshTokenFromResponse(res);
+
+        return { message: 'Success' };
     }
 }

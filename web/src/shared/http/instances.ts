@@ -1,5 +1,5 @@
-import ky from "ky";
-import { kyClientOptions } from "./options";
+import ky from 'ky';
+import { kyClientOptions } from './options';
 
 const authorized = ky.create(kyClientOptions);
 const unauthorized = ky.create(kyClientOptions);

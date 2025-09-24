@@ -1,9 +1,7 @@
-import React, { FC, ReactNode } from 'react'
+import React, { FC, ReactNode } from 'react';
 
 const AuthLayout: FC<{ children: ReactNode }> = ({ children }) => {
-  return (
-    <>{children}</>
-  )
-}
+    return <>{children}</>;
+};
 
 export default AuthLayout;

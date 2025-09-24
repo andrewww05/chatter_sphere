@@ -1,10 +1,10 @@
-import api from "@/shared/http/instances";
-import { create } from "zustand";
+import api from '@/shared/http/instances';
+import { create } from 'zustand';
 
 enum AuthStatus {
     AUTHORIZED = 'authorized',
     UNAUTHORIZED = 'unauthorized',
-    PENDING = 'pending'
+    PENDING = 'pending',
 }
 
 interface AuthState {
@@ -24,8 +24,6 @@ const useAuthStore = create<AuthStore>()((set) => ({
 
         try {
             api.authorized.get('');
-        } catch (error) {
-            
-        }
-    }
+        } catch (error) {}
+    },
 }));

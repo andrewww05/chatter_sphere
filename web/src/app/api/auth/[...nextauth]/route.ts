@@ -1,6 +1,6 @@
-import api from "@/shared/http/instances";
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import api from '@/shared/http/instances';
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
 const handler = NextAuth({
     debug: true,
@@ -14,9 +14,9 @@ const handler = NextAuth({
         }),
     ],
     callbacks: {
-        async jwt({ token, account, user }) {
+        async jwt({ token, account }) {
             if (account) {
-                const res = await api.unauthorized.post("auth/login/google", {
+                const res = await api.unauthorized.post('auth/login/google', {
                     headers: {
                         Authorization: `Bearer ${account.id_token}`,
                     },
@@ -25,14 +25,14 @@ const handler = NextAuth({
                 if (!res.ok) {
                     const errorText = await res.text();
                     console.error(
-                        `Backend returned ${res.status}: ${errorText}`
+                        `Backend returned ${res.status}: ${errorText}`,
                     );
                     throw new Error(`Backend request failed: ${res.status}`);
                 }
 
-                const data = await res.json();
+                const { accessToken } = await res.json<{ accessToken: string }>();
 
-                token.backendData = data;
+                token.accessToken = accessToken;
             }
             return token;
         },
@@ -49,11 +49,11 @@ const handler = NextAuth({
         },
     },
     pages: {
-        signIn: "/sign-in",
-        signOut: "/sign-out",
-        error: "/error",
-        verifyRequest: "/verify-request",
-        newUser: "/new-user",
+        signIn: '/sign-in',
+        signOut: '/sign-out',
+        error: '/error',
+        verifyRequest: '/verify-request',
+        newUser: '/new-user',
     },
 });
 

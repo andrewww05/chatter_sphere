@@ -1,6 +1,5 @@
 import {
     Controller,
-    Get,
     HttpStatus,
     Post,
     Req,
@@ -30,13 +29,23 @@ export class AuthController {
         return res.status(HttpStatus.OK).json(tokens);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Post('refresh')
-    public async refresh(
-        @Req() req,
+    public refresh(
+        @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
     ) {
-        const tokens = await this.authService.issueTokens({ id: req.user.id });
+        const tokens = this.authService.refresh(req, res);
+
+        return res.status(HttpStatus.OK).json(tokens);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('logout')
+    public logout(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+    ) {
+        const tokens = this.authService.logout(req, res);
 
         return res.status(HttpStatus.OK).json(tokens);
     }
